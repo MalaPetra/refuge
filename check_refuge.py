@@ -37,11 +37,13 @@ def check_status():
     soup = BeautifulSoup(response.text, "html.parser")
 
     for cell in soup.find_all("td"):
+        # Look for a link whose text is exactly our check day
         link = cell.find("a", string=CHECK_DAY)
 
         if link:
             return "AVAILABLE"
 
+        # If the cell contains the day but no link (usually red/black text)
         if cell.get_text(strip=True) == CHECK_DAY:
             return "NOT AVAILABLE"
 
@@ -50,13 +52,16 @@ def check_status():
 if __name__ == "__main__":
     try:
         status = check_status()
-        print("June 23 status:", status)
+        print(f"June {CHECK_DAY} status: {status}")
 
-        # Force a message regardless of status just to test
-send_telegram(f"Test run: June 23 status is {status}")
+        # TEMPORARY: This will send a message every 30 mins to prove it's working.
+        # Delete this line once you are happy with the setup!
+        send_telegram(f"Bot Check: June {CHECK_DAY} is currently {status}")
 
-if status == "AVAILABLE":
-    send_telegram(f"Refuge available on {CHECK_DAY}! {URL}")
+        # ALERT: This only triggers when the link actually appears on the site
+        if status == "AVAILABLE":
+            send_telegram(f"🚨 ALERT: Refuge available on June {CHECK_DAY}! Book now: {URL}")
+
     except Exception as exc:
         print("Error checking status:", exc)
         send_telegram(f"Error checking refuge availability: {exc}")
