@@ -52,8 +52,11 @@ if __name__ == "__main__":
         status = check_status()
         print("June 23 status:", status)
 
-        if status == "AVAILABLE":
-            send_telegram(f"Refuge available on {CHECK_DAY}! {URL}")
+        # Force a message regardless of status just to test
+send_telegram(f"Test run: June 23 status is {status}")
+
+if status == "AVAILABLE":
+    send_telegram(f"Refuge available on {CHECK_DAY}! {URL}")
     except Exception as exc:
         print("Error checking status:", exc)
         send_telegram(f"Error checking refuge availability: {exc}")
