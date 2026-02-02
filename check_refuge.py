@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = "https://rifugiolagazuoi.com/EN/disponibilita.php?prm=4&chm=-1"
-CHECK_DAY = "27"
+URL = "https://rifugiolagazuoi.com/EN/disponibilita.php?prm=5&chm=1"
+CHECK_DAY = "23"
 
 HEADERS = {
     "User-Agent": (
@@ -19,13 +19,13 @@ def check_status():
     soup = BeautifulSoup(response.text, "html.parser")
 
     for cell in soup.find_all("td"):
-        # Look for a link whose text is exactly "27"
+        # Look for a link whose text is exactly "23"
         link = cell.find("a", string=CHECK_DAY)
 
         if link:
             return "AVAILABLE"
 
-        # If the cell contains just "27" with no link
+        # If the cell contains just "23" with no link
         if cell.get_text(strip=True) == CHECK_DAY:
             return "NOT AVAILABLE"
 
@@ -33,4 +33,4 @@ def check_status():
 
 
 if __name__ == "__main__":
-    print("March 27 status:", check_status())
+    print("June 23 status:", check_status())
