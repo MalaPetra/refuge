@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 
@@ -12,6 +13,23 @@ HEADERS = {
     )
 }
 
+def send_telegram(message: str) -> None:
+    token = os.getenv("TELEGRAM_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+
+    if not token or not chat_id:
+        print("Telegram token or chat id not set; skipping notification.")
+        return
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = {"chat_id": chat_id, "text": message}
+
+    try:
+        resp = requests.post(url, data=payload, timeout=10)
+        resp.raise_for_status()
+    except Exception as e:
+        print("Failed to send Telegram message:", e)
+
 def check_status():
     response = requests.get(URL, headers=HEADERS, timeout=15)
     response.raise_for_status()
@@ -19,18 +37,23 @@ def check_status():
     soup = BeautifulSoup(response.text, "html.parser")
 
     for cell in soup.find_all("td"):
-        # Look for a link whose text is exactly "23"
         link = cell.find("a", string=CHECK_DAY)
 
         if link:
             return "AVAILABLE"
 
-        # If the cell contains just "23" with no link
         if cell.get_text(strip=True) == CHECK_DAY:
             return "NOT AVAILABLE"
 
     return "DAY NOT FOUND"
 
-
 if __name__ == "__main__":
-    print("June 23 status:", check_status())
+    try:
+        status = check_status()
+        print("June 23 status:", status)
+
+        if status == "AVAILABLE":
+            send_telegram(f"Refuge available on {CHECK_DAY}! {URL}")
+    except Exception as exc:
+        print("Error checking status:", exc)
+        send_telegram(f"Error checking refuge availability: {exc}")
