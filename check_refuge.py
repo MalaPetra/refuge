@@ -54,14 +54,11 @@ if __name__ == "__main__":
         status = check_status()
         print(f"June {CHECK_DAY} status: {status}")
 
-        # TEMPORARY: This will send a message every 30 mins to prove it's working.
-        # Delete this line once you are happy with the setup!
-        send_telegram(f"Bot Check: June {CHECK_DAY} is currently {status}")
-
-        # ALERT: This only triggers when the link actually appears on the site
+        # Only send a message if the room is available
         if status == "AVAILABLE":
             send_telegram(f"🚨 ALERT: Refuge available on June {CHECK_DAY}! Book now: {URL}")
 
     except Exception as exc:
+        # Keep this so you know if the script breaks due to site changes
         print("Error checking status:", exc)
-        send_telegram(f"Error checking refuge availability: {exc}")
+        send_telegram(f"⚠️ Error: The refuge scout script encountered an error: {exc}")
