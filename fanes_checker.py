@@ -5,7 +5,7 @@ import requests
 
 PROPERTY_ID = "13308"
 SOURCE_ID = "98"
-CHECK_DATE = "2026-06-11”         # Change this to your target date (YYYY-MM-DD)
+CHECK_DATE = "2026-06-11"        # Change this to your target date (YYYY-MM-DD)
 GUEST_COUNT = 2                    # Number of guests
 
 BOOKING_URL = "https://www.rifugiofanes.com/en/booking"
