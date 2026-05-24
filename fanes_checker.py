@@ -74,7 +74,8 @@ def check_date(check_in: str) -> str:
     data = response.json()
 
     # The API returns a list of room offers when available, empty list when not
-    if isinstance(data, list) and len(data) > 0:
+    rooms = data.get("rooms", [])
+    if any(room.get("room_free", 0) > 0 for room in rooms):
         return "AVAILABLE"
     return "NOT AVAILABLE"
 
